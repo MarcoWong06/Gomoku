@@ -6,6 +6,4 @@ File: Gomoku.java
 
 Author: WONG, Sai Lung
 
-Description: Assignment of programming sem-1.
-
-Commit
+Description: Assignment of programming Sem 1.
