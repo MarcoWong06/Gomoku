@@ -10,9 +10,10 @@ public class Gomoku {
     public static Scanner sc = new Scanner(System.in);
 
     public int bLen;
+    public int inARow;
     public int[][] board;
 
-    public Gomoku(int boardLength) {
+    public Gomoku(int boardLength, int inARow) {
         this.bLen = boardLength;
         this.board = new int[bLen][bLen];
     }
@@ -75,60 +76,38 @@ public class Gomoku {
     }
 
     public boolean isEnd(int x, int y) {
-        return (
-            isVerticalSame(x, y, 5) ||
-            isHorizontalSame(x, y, 5)||
-            isDiagonalUL2DRSame(x, y, 5)||
-            isDiagonalDL2URSame(x, y, 5));
+        return 
+            isHorizontalSame(x, y, inARow) ||
+            isVerticalSame(x, y, inARow) ||
+            isDiagonalUL2DRSame(x, y, inARow) ||
+            isDiagonalDL2URSame(x, y, inARow);
     }
 
     public boolean isHorizontalSame(int x, int y, int noOfSame) {
         int n = 1;
-
-        int i = 0;
-        while (
-            n < noOfSame &&
-            y + i + 1 < bLen &&
-            board[x][y + i] == board[x][y + i++ + 1]
-        ) ++n;
-
-        i = 0;
-        while (
-            n < noOfSame &&
-            y - i - 1 >= 0 &&
-            board[x][y - 1] == board[x][y - i++ - 1]
-        ) ++n;
-
+        for (int i = 0; n < noOfSame && y + i + 1 < bLen && board[x][y + i] == board[x][y + i++ + 1]; ++n) {}
+        for (int i = 0; n < noOfSame && y - i - 1 >= 0 && board[x][y - i] == board[x][y - i++ - 1]; ++n) {}
         return n >= noOfSame;
     }
 
     public boolean isVerticalSame(int x, int y, int noOfSame) {
         int n = 1;
-
-        int i = 0;
-        while (
-            n < noOfSame &&
-            x + i + 1 < bLen &&
-            board[x + i][y] == board[x + i++ + 1][y]
-        ) ++n;
-
-        i = 0;
-        while (
-            n < noOfSame &&
-            x - i - 1 >= 0 &&
-            board[x - i][y] == board[x - i++ - 1][y]
-        ) ++n;
-
+        for (int i = 0; n < noOfSame && x + i + 1 < bLen && board[x + i][y] == board[x + i++ + 1][y]; ++n) {}
+        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && board[x - i][y] == board[x - i++ - 1][y]; ++n) {}
         return n >= noOfSame;
     }
 
     public boolean isDiagonalUL2DRSame(int x, int y, int noOfSame) {
         int n = 1;
+        for (int i = 0; n < noOfSame && x + i + 1 < bLen && y + i + 1 < bLen && board[x + i][y + i] == board[x + i + 1][y + i++ + 1]; ++n) {}
+        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && y - i - 1 >= 0 && board[x - i][y - i] == board[x - i - 1][y - i++ - 1]; ++n) {}
         return n >= noOfSame;
     }
 
     public boolean isDiagonalDL2URSame(int x, int y, int noOfSame) {
         int n = 1;
+        for (int i = 0; n < noOfSame && x + i + 1 < bLen && y - i - 1 >= 0 && board[x + i][y - i] == board[x + i + 1][y - i++ - 1]; ++n) {}
+        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && y + i + 1 < bLen && board[x - i][y + i] == board[x - i - 1][y + i++ + 1]; ++n) {}
         return n >= noOfSame;
     }
 
@@ -137,30 +116,10 @@ public class Gomoku {
     }
     public static void main(String[] args) {
         clearPrint();
-        Gomoku myGomokuGame = new Gomoku(10);
+        // Gomoku GomokuGame = new Gomoku(15, 5);
+        Gomoku myGomokuGame = new Gomoku(10, 4);
         // myGomokuGame.printBoard();
         myGomokuGame.gameStart();
         // System.out.println(myGomokuGame.isInRange(0, 0));
     }
 }
-/*
-0 0
-0 1
-1 0
-1 1
-2 0
-2 1
-3 0
-3 1
-4 0
-
-0 0
-1 0
-0 1
-1 1
-0 2
-1 2
-0 3
-1 3
-0 4
- */
