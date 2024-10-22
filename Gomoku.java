@@ -9,20 +9,37 @@ import java.util.Scanner;
 public class Gomoku {
     public static Scanner sc = new Scanner(System.in);
 
-    public int bLen;
-    public int inARow;
+    public int bLen; // board length
+    public int inARow; // number in a row to win
     public int[][] board;
 
+    /**
+     * Before start the game, create a board {@code object}.
+     * 
+     * Datermind the the board length {@code n * n} and decide the win condition.
+     * 
+     * <p> For example, create a {@code 10 * 10} board
+     * with the win condition {@code 4 in a row}
+     * 
+     * {@snippet :
+     * Gomoku myGomokuGame = new Gomoku(10, 4);
+     * myGomokuGame.gameStart();
+     * }
+     * @param boardLength   board length of a {@code n * n} board
+     * @param inARow        number in a row to win
+     */
     public Gomoku(int boardLength, int inARow) {
         this.bLen = boardLength;
         this.board = new int[bLen][bLen];
         this.inARow = inARow;
     }
 
+    /**
+     * After the board {@code object} created, start the game-loop.
+     */
     public void gameStart() {
         int x = 0, y = 0, player = 2;
         printBoard();
-        // gameInit();
         do {
             player = 3 - player;
             do {
@@ -37,10 +54,9 @@ public class Gomoku {
         System.out.println("Player " + player + " wins!");
     }
 
-    public void gameInit() {
-        for (int i = 0; i < bLen; i++) for (int j = 0; j < bLen; j++) board[i][j] = 0;
-    }
-
+    /**
+     * In game-loop, board {@code object} will print out at console.
+     */
     public void printBoard() {
         System.out.println();
         for (int i = 0; i < bLen; i++) {
@@ -56,23 +72,55 @@ public class Gomoku {
         System.out.println();
     }
 
+    /**
+     * In game-loop, print out the wave infomation to let {@code player}
+     * know who is going to place piece.
+     * @param player    who's turn
+     */
     public void printInfo(int player) {
         System.out.println("Player " + player + "'s turn.");
         System.out.print("Enter row and column (e.g., 0 1): ");
     }
 
+    /**
+     * Return a {@code Boolean} value to datermind is the {@code piece (x, y)}
+     * in range of board {@code object}.
+     * 
+     * In addition, console will print out the err message if the condition is {@code false}.
+     * @param x {@code row} of the piece
+     * @param y {@code col} of the piece
+     * @return  {@code boolen} value o datermind is the {@code piece (x, y)}
+     *          in range of board {@code object}.
+     */
     public boolean isInRange(int x, int y) {
         if (isPieceInBoard(x, y)) return true;
         System.out.println("Out of range! Try again.");
         return false;
     }
 
+    /**
+     * Return a {@code Boolean} value to datermind is the {@code piece (x, y)}
+     * be able to place on board {@code object}. The condition will verifly
+     * {@code board[x][y]} is empty.
+     * 
+     * In addition, console will print the err message if the condition is {@code false}.
+     * @param x {@code row} of the piece
+     * @param y {@code col} of the piece
+     * @return  a {@code Boolean} value to datermind is the {@code piece (x, y)}
+     *          be able to place on board {@code object}
+     */
     public boolean isVaild(int x, int y) {
         if (board[x][y] == 0) return true;
         System.out.println("Invalid move. Try again.");
         return false;
     }
 
+    /**
+     * Place a piece on board {@code odject} in the index of {@code (x, y)}.
+     * @param player    who place the piece
+     * @param x         {@code row} of the piece
+     * @param y         {@code col} of the piece
+     */
     public void placePiece(int player, int x, int y) {
         board[x][y] = player;
     }
