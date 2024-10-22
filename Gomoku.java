@@ -16,6 +16,7 @@ public class Gomoku {
     public Gomoku(int boardLength, int inARow) {
         this.bLen = boardLength;
         this.board = new int[bLen][bLen];
+        this.inARow = inARow;
     }
 
     public void gameStart() {
@@ -30,7 +31,7 @@ public class Gomoku {
                 y = sc.nextInt();
             } while (!isInRange(x, y) || !isVaild(x, y));
             placePiece(player, x, y);
-            clearPrint();
+            // clearPrint();
             printBoard();
         } while (!isEnd(x, y));
         System.out.println("Player " + player + " wins!");
@@ -41,6 +42,7 @@ public class Gomoku {
     }
 
     public void printBoard() {
+        System.out.println();
         for (int i = 0; i < bLen; i++) {
             System.out.print(i + (i < 10 ? " |" : "|"));
             for (int j : board[i]) System.out.print(" " + j);
@@ -60,8 +62,8 @@ public class Gomoku {
     }
 
     public boolean isInRange(int x, int y) {
-        if (x >= 0 && x < bLen && y >= 0 && y < bLen) return true;
-        System.out.println("Out of range! Input again.");
+        if (isPieceInBoard(x, y)) return true;
+        System.out.println("Out of range! Try again.");
         return false;
     }
 
@@ -77,38 +79,21 @@ public class Gomoku {
 
     public boolean isEnd(int x, int y) {
         return 
-            isHorizontalSame(x, y, inARow) ||
-            isVerticalSame(x, y, inARow) ||
-            isDiagonalUL2DRSame(x, y, inARow) ||
-            isDiagonalDL2URSame(x, y, inARow);
+            isAdjacentPiecesSame(x, y, 1, 0) ||
+            isAdjacentPiecesSame(x, y, 0, 1) ||
+            isAdjacentPiecesSame(x, y, 1, 1) ||
+            isAdjacentPiecesSame(x, y, -1, 1);
     }
 
-    public boolean isHorizontalSame(int x, int y, int noOfSame) {
-        int n = 1;
-        for (int i = 0; n < noOfSame && y + i + 1 < bLen && board[x][y + i] == board[x][y + i++ + 1]; ++n) {}
-        for (int i = 0; n < noOfSame && y - i - 1 >= 0 && board[x][y - i] == board[x][y - i++ - 1]; ++n) {}
-        return n >= noOfSame;
+    public boolean isAdjacentPiecesSame(int x, int y, int dir_x, int dir_y) {
+        int noOfPieces = 1;
+        for (int i = 0; noOfPieces < inARow && isPieceInBoard(x + (i + 1) * dir_x, y + (i + 1) * dir_y) && board[x + i * dir_x][y + i * dir_y] == board[x + (i + 1) * dir_x][y + (i + 1) * dir_y]; ++i) ++noOfPieces;
+        for (int i = 0; noOfPieces < inARow && isPieceInBoard(x - (i + 1) * dir_x, y - (i + 1) * dir_y) && board[x - i * dir_x][y - i * dir_y] == board[x - (i + 1) * dir_x][y - (i + 1) * dir_y]; ++i) ++noOfPieces;
+        return noOfPieces >= inARow;
     }
 
-    public boolean isVerticalSame(int x, int y, int noOfSame) {
-        int n = 1;
-        for (int i = 0; n < noOfSame && x + i + 1 < bLen && board[x + i][y] == board[x + i++ + 1][y]; ++n) {}
-        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && board[x - i][y] == board[x - i++ - 1][y]; ++n) {}
-        return n >= noOfSame;
-    }
-
-    public boolean isDiagonalUL2DRSame(int x, int y, int noOfSame) {
-        int n = 1;
-        for (int i = 0; n < noOfSame && x + i + 1 < bLen && y + i + 1 < bLen && board[x + i][y + i] == board[x + i + 1][y + i++ + 1]; ++n) {}
-        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && y - i - 1 >= 0 && board[x - i][y - i] == board[x - i - 1][y - i++ - 1]; ++n) {}
-        return n >= noOfSame;
-    }
-
-    public boolean isDiagonalDL2URSame(int x, int y, int noOfSame) {
-        int n = 1;
-        for (int i = 0; n < noOfSame && x + i + 1 < bLen && y - i - 1 >= 0 && board[x + i][y - i] == board[x + i + 1][y - i++ - 1]; ++n) {}
-        for (int i = 0; n < noOfSame && x - i - 1 >= 0 && y + i + 1 < bLen && board[x - i][y + i] == board[x - i - 1][y + i++ + 1]; ++n) {}
-        return n >= noOfSame;
+    public boolean isPieceInBoard(int x, int y) {
+        return x >= 0 && x < bLen && y >= 0 && y < bLen;
     }
 
     public static void clearPrint() {
@@ -123,3 +108,22 @@ public class Gomoku {
         // System.out.println(myGomokuGame.isInRange(0, 0));
     }
 }
+
+/*
+-1 0 
+0 10 
+0 1 
+0 1 
+0 2 
+1 1 
+1 2 
+2 3 
+2 2 
+3 1 
+2 1 
+3 2 
+3 0 
+3 3 
+0 3 
+
+ */
