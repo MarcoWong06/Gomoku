@@ -1,17 +1,16 @@
-/* 
- * Copyright (c) 2024, WONG Sai Lung. All rights reserved.
- * 
- * File: Gomoku.java
- * Author: WONG, Sai Lung
- */
 import java.util.Scanner;
 
+/**
+ * Copyright (c) 2024, WONG Sai Lung. All rights reserved.
+ * @author WONG, Sai Lung
+ * @version v1.0.0
+ */
 public class Gomoku {
     public static Scanner sc = new Scanner(System.in);
 
-    public int bLen; // board length
-    public int inARow; // number in a row to win
-    public int[][] board;
+    public int bLen;        // board length
+    public int inARow;      // number in a row to win
+    public int[][] board;   // board object
 
     /**
      * Before start the game, create a board {@code object}.
@@ -38,11 +37,15 @@ public class Gomoku {
      * After the board {@code object} created, start the game-loop.
      */
     public void gameStart() {
+
+        /* Initialization */
         int x = 0, y = 0, player = 2;
         printBoard();
+
+        /* Game-loop */
         do {
-            player = 3 - player;
-            do {
+            player = 3 - player;    // Switch player
+            do {                    // A scanner input do-while-loop
                 printInfo(player);
                 x = sc.nextInt();
                 y = sc.nextInt();
@@ -51,6 +54,8 @@ public class Gomoku {
             // clearPrint();
             printBoard();
         } while (!isEnd(x, y));
+
+        /* Game end */
         System.out.println("Player " + player + " wins!");
     }
 
@@ -59,11 +64,20 @@ public class Gomoku {
      */
     public void printBoard() {
         System.out.println();
+
+        /* Upper part of board */
         for (int i = 0; i < bLen; i++) {
+
+            /* row index of board */
             System.out.print(i + (i < 10 ? " |" : "|"));
+
+            /* board piece */
             for (int j : board[i]) System.out.print(" " + j);
+
             System.out.println();
         }
+
+        /* boundary and column index */
         System.out.print("  +");
         for (int i = 0; i < bLen; i++) System.out.print("--");
         System.out.println();
@@ -75,7 +89,7 @@ public class Gomoku {
     /**
      * In game-loop, print out the wave infomation to let {@code player}
      * know who is going to place piece.
-     * @param player    who's turn
+     * @param player who's turn
      */
     public void printInfo(int player) {
         System.out.println("Player " + player + "'s turn.");
@@ -99,14 +113,14 @@ public class Gomoku {
     }
 
     /**
-     * Return a {@code Boolean} value to datermind is the {@code piece (x, y)}
+     * Return a {@code boolean} value to datermind is the {@code piece (x, y)}
      * be able to place on board {@code object}. The condition will verifly
      * {@code board[x][y]} is empty.
      * 
      * In addition, console will print the err message if the condition is {@code false}.
      * @param x {@code row} of the piece
      * @param y {@code col} of the piece
-     * @return  a {@code Boolean} value to datermind is the {@code piece (x, y)}
+     * @return  a {@code boolean} value to datermind is the {@code piece (x, y)}
      *          be able to place on board {@code object}
      */
     public boolean isVaild(int x, int y) {
@@ -116,7 +130,7 @@ public class Gomoku {
     }
 
     /**
-     * Place a piece on board {@code odject} in the index of {@code (x, y)}.
+     * Place a piece on board {@code odject} in the index of {@code (x, y)} on board {@code object}.
      * @param player    who place the piece
      * @param x         {@code row} of the piece
      * @param y         {@code col} of the piece
@@ -125,6 +139,14 @@ public class Gomoku {
         board[x][y] = player;
     }
 
+    /**
+     * Return a {@code boolean} value to datermind is the game already end.
+     * The method will check the one of {@code piece (x, y)} of different
+     * postion is already achieve the win condition.
+     * @param x {@code row} of the piece
+     * @param y {@code col} of the piece
+     * @return  a {@code boolean} value to datermind is the game already end
+     */
     public boolean isEnd(int x, int y) {
         return 
             isAdjacentPiecesSame(x, y, 1, 0) ||
@@ -133,17 +155,51 @@ public class Gomoku {
             isAdjacentPiecesSame(x, y, -1, 1);
     }
 
+    /**
+     * Return a {@code boolean} value to datermind is the direction {@code x}
+     * and {@code y} of {@code piece (x, y)} is bigger than win condition.
+     * 
+     * The case of {@code dir_x, dir_y} are
+     * 
+     * {@code (1, 0)}: Horizontally;
+     * {@code (0, 1)}: Vertically;
+     * {@code (1, 1)}: Top left to bottem right;
+     * {@code (-1, 1)}: Bottem right to top left.
+     * 
+     * @param x     {@code row} of the piece
+     * @param y     {@code col} of the piece
+     * @param dir_x direction of {@code x}
+     * @param dir_y direction of {@code y}
+     * @return      a {@code boolean} value to diatermind is the direction {@code x}
+     *              and {@code y} of {@code piece (x, y)} is bigger than win condition.
+     */
     public boolean isAdjacentPiecesSame(int x, int y, int dir_x, int dir_y) {
+
+        /* self piece */
         int noOfPieces = 1;
+
+        /* adjacent pieces */
         for (int i = 0; noOfPieces < inARow && isPieceInBoard(x + (i + 1) * dir_x, y + (i + 1) * dir_y) && board[x + i * dir_x][y + i * dir_y] == board[x + (i + 1) * dir_x][y + (i + 1) * dir_y]; ++i) ++noOfPieces;
         for (int i = 0; noOfPieces < inARow && isPieceInBoard(x - (i + 1) * dir_x, y - (i + 1) * dir_y) && board[x - i * dir_x][y - i * dir_y] == board[x - (i + 1) * dir_x][y - (i + 1) * dir_y]; ++i) ++noOfPieces;
+        
         return noOfPieces >= inARow;
     }
 
+    /**
+     * Return a {@code boolean} value to datermind the {@code piece (x, y)}
+     * in range of board {@code object}.
+     * @param x {@code row} of the piece
+     * @param y {@code col} of the piece
+     * @return  a {@code boolean} value to datermind the {@code piece (x, y)}
+     *          in range of board {@code object}.
+     */
     public boolean isPieceInBoard(int x, int y) {
         return x >= 0 && x < bLen && y >= 0 && y < bLen;
     }
 
+    /**
+     * Clear the console output.
+     */
     public static void clearPrint() {
         System.out.print("\033[H\033[2J");
     }
