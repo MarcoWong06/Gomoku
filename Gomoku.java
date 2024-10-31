@@ -8,29 +8,42 @@ import java.util.Scanner;
 public class Gomoku {
     public static Scanner sc = new Scanner(System.in);
 
-    public int bLen;        // board length
-    public int inARow;      // number in a row to win
-    public int[][] board;   // board object
+    private final int BOARD_LENGTH;        // board length
+    private final int IN_A_ROW;      // number in a row to win
+    private final int[][] board;   // board object
 
     /**
      * Before start the game, create a board {@code object}.
      * 
      * Datermind the the board length {@code n * n} and decide the win condition.
      * 
-     * <p> For example, create a {@code 10 * 10} board
-     * with the win condition {@code 4 in a row}
+     * For example, create a {@code 10 * 10} board with the win condition {@code 4 in a row}
      * 
      * {@snippet :
      * Gomoku myGomokuGame = new Gomoku(10, 4);
      * myGomokuGame.gameStart();
      * }
      * @param boardLength   board length of a {@code n * n} board
-     * @param inARow        number in a row to win
+     * @param IN_A_ROW        number in a row to win
      */
-    public Gomoku(int boardLength, int inARow) {
-        this.bLen = boardLength;
-        this.board = new int[bLen][bLen];
-        this.inARow = inARow;
+    public Gomoku(int boardLength, int IN_A_ROW) {
+        // Error detection
+        if (boardLength < 1) throw new IllegalArgumentException("Board length must be positive");
+        if (IN_A_ROW < 1) throw new IllegalArgumentException("In a row value must be positive");
+
+        this.BOARD_LENGTH = boardLength;
+        this.IN_A_ROW = IN_A_ROW;
+        this.board = new int[BOARD_LENGTH][BOARD_LENGTH];
+    }
+
+    /**
+     * Before start the game, create a {@code 10 * 10} board {@code object}
+     * with win condition "{@code 4} in a row"
+     */
+    public Gomoku() {
+        this.BOARD_LENGTH = 10;
+        this.IN_A_ROW = 4;
+        this.board = new int[BOARD_LENGTH][BOARD_LENGTH];
     }
 
     /**
@@ -66,7 +79,7 @@ public class Gomoku {
         System.out.println();
 
         /* Upper part of board */
-        for (int i = 0; i < bLen; i++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
 
             /* row index of board */
             System.out.print(i + (i < 10 ? " |" : "|"));
@@ -79,10 +92,10 @@ public class Gomoku {
 
         /* boundary and column index */
         System.out.print("  +");
-        for (int i = 0; i < bLen; i++) System.out.print("--");
+        for (int i = 0; i < BOARD_LENGTH; i++) System.out.print("--");
         System.out.println();
         System.out.print("   ");
-        for (int i = 0; i < bLen; i++) System.out.print((i < 10 ? " " : "") + i);
+        for (int i = 0; i < BOARD_LENGTH; i++) System.out.print((i < 10 ? " " : "") + i);
         System.out.println();
     }
 
@@ -148,11 +161,10 @@ public class Gomoku {
      * @return  a {@code boolean} value to datermind is the game already end
      */
     public boolean isEnd(int x, int y) {
-        return 
-            isAdjacentPiecesSame(x, y, 1, 0) ||
-            isAdjacentPiecesSame(x, y, 0, 1) ||
-            isAdjacentPiecesSame(x, y, 1, 1) ||
-            isAdjacentPiecesSame(x, y, -1, 1);
+        return isAdjacentPiecesSame(x, y, 1, 0)
+            || isAdjacentPiecesSame(x, y, 0, 1)
+            || isAdjacentPiecesSame(x, y, 1, 1)
+            || isAdjacentPiecesSame(x, y, -1, 1);
     }
 
     /**
@@ -179,10 +191,10 @@ public class Gomoku {
         int noOfPieces = 1;
 
         /* adjacent pieces */
-        for (int i = 0; noOfPieces < inARow && isPieceInBoard(x + (i + 1) * dir_x, y + (i + 1) * dir_y) && board[x + i * dir_x][y + i * dir_y] == board[x + (i + 1) * dir_x][y + (i + 1) * dir_y]; ++i) ++noOfPieces;
-        for (int i = 0; noOfPieces < inARow && isPieceInBoard(x - (i + 1) * dir_x, y - (i + 1) * dir_y) && board[x - i * dir_x][y - i * dir_y] == board[x - (i + 1) * dir_x][y - (i + 1) * dir_y]; ++i) ++noOfPieces;
+        for (int i = 0; noOfPieces < IN_A_ROW && isPieceInBoard(x + (i + 1) * dir_x, y + (i + 1) * dir_y) && board[x + i * dir_x][y + i * dir_y] == board[x + (i + 1) * dir_x][y + (i + 1) * dir_y]; ++i) ++noOfPieces;
+        for (int i = 0; noOfPieces < IN_A_ROW && isPieceInBoard(x - (i + 1) * dir_x, y - (i + 1) * dir_y) && board[x - i * dir_x][y - i * dir_y] == board[x - (i + 1) * dir_x][y - (i + 1) * dir_y]; ++i) ++noOfPieces;
         
-        return noOfPieces >= inARow;
+        return noOfPieces >= IN_A_ROW;
     }
 
     /**
@@ -194,7 +206,7 @@ public class Gomoku {
      *          in range of board {@code object}.
      */
     public boolean isPieceInBoard(int x, int y) {
-        return x >= 0 && x < bLen && y >= 0 && y < bLen;
+        return x >= 0 && x < BOARD_LENGTH && y >= 0 && y < BOARD_LENGTH;
     }
 
     /**
@@ -206,28 +218,10 @@ public class Gomoku {
     public static void main(String[] args) {
         clearPrint();
         // Gomoku GomokuGame = new Gomoku(15, 5);
-        Gomoku myGomokuGame = new Gomoku(10, 4);
+        // Gomoku myGomokuGame = new Gomoku(10, 4);
+        Gomoku myGomokuGame = new Gomoku();
         // myGomokuGame.printBoard();
         myGomokuGame.gameStart();
         // System.out.println(myGomokuGame.isInRange(0, 0));
     }
 }
-
-/*
--1 0 
-0 10 
-0 1 
-0 1 
-0 2 
-1 1 
-1 2 
-2 3 
-2 2 
-3 1 
-2 1 
-3 2 
-3 0 
-3 3 
-0 3 
-
- */
