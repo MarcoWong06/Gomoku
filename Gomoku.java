@@ -22,17 +22,17 @@ public class Gomoku {
      * myGomokuGame.startGame();
      * }
      * @param boardLength   board length of a {@code n * n} board
-     * @param IN_A_ROW        number in a row to win
+     * @param winCondition        number in a row to win
      */
-    public Gomoku(int boardLength, int IN_A_ROW) {
+    public Gomoku(int boardLength, int winCondition) {
         // Error detection
         if (boardLength < 1)
             throw new IllegalArgumentException("Board length must be positive");
-        if (IN_A_ROW < 1)
+        if (winCondition < 1)
             throw new IllegalArgumentException("In a row value must be positive");
 
         this.BOARD_LENGTH = boardLength;
-        this.IN_A_ROW = IN_A_ROW;
+        this.IN_A_ROW = winCondition;
         this.board = new int[BOARD_LENGTH][BOARD_LENGTH];
     }
 
