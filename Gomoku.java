@@ -17,7 +17,7 @@ public class Gomoku {
      * 
      * For example, create a {@code 10 * 10} board with the win condition {@code 4 in a row}
      * 
-     * {@snippet:
+     * {@snippet :
      * Gomoku myGomokuGame = new Gomoku(10, 4);
      * myGomokuGame.startGame();
      * }
@@ -50,11 +50,12 @@ public class Gomoku {
     public void startGame() {
 
         /* Initialization */
-        int x = 0, y = 0, player = 2;
+        int x = 0, y = 0, player = 2, wave = 0;
         printBoard();
 
         /* Game-loop */
         do {
+            ++wave;
             player = 3 - player;    // Switch player
             do {                    // A scanner input do-while-loop
                 printInfo(player);
@@ -64,10 +65,10 @@ public class Gomoku {
             placePiece(player, x, y);
             // clearPrint();
             printBoard();
-        } while (!isEnd(x, y));
+        } while (!isEnd(x, y) && wave < 100);
 
         /* Game end */
-        System.out.println("Player " + player + " wins!");
+        System.out.println(wave < 100 ? "Player " + player + " wins!" : "Draw!");
     }
 
     /**
