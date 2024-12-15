@@ -10,6 +10,7 @@ public class Gomoku {
 
     private final int BOARD_LENGTH; // board length
     private final int IN_A_ROW;     // number in a row to win
+    public int drawCondition;      // number of pieces to draw
     private int[][] board;          // board object
 
     /**
@@ -22,7 +23,7 @@ public class Gomoku {
      * myGomokuGame.startGame();
      * }
      * @param boardLength   board length of a {@code n * n} board
-     * @param winCondition        number in a row to win
+     * @param winCondition  number in a row to win
      */
     public Gomoku(int boardLength, int winCondition) {
         // Error detection
@@ -31,8 +32,12 @@ public class Gomoku {
         if (winCondition < 1)
             throw new IllegalArgumentException("In a row value must be positive");
 
+        // Initializes the board details
         this.BOARD_LENGTH = boardLength;
         this.IN_A_ROW = winCondition;
+
+        // Initializes the board
+        this.drawCondition = BOARD_LENGTH * BOARD_LENGTH;
         this.board = new int[BOARD_LENGTH][BOARD_LENGTH];
     }
 
@@ -55,7 +60,6 @@ public class Gomoku {
 
         /* Game-loop */
         do {
-            ++wave;
             player = 3 - player;    // Switch player
             do {                    // A scanner input do-while-loop
                 printInfo(player);
@@ -65,10 +69,11 @@ public class Gomoku {
             placePiece(player, x, y);
             // clearPrint();
             printBoard();
-        } while (!isEnd(x, y) && wave < 100);
+        } while (!isEnd(x, y) && ++wave < drawCondition);
 
         /* Game end */
-        System.out.println(wave < 100 ? "Player " + player + " wins!" : "Draw!");
+        System.out.println(wave < drawCondition ? "Player " + player + " wins!"
+                                                : "It's a draw game!");
     }
 
     /**
